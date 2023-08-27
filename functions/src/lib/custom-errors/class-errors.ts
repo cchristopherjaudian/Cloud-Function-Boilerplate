@@ -1,5 +1,5 @@
 import httpStatus from 'http-status';
-import ResponseCodes from '../../commons/response-codes';
+import ResponseCodes from '../../../commons/response-codes';
 import BaseError from './base-error';
 
 class NotFoundError extends BaseError {
