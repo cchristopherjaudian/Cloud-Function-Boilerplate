@@ -1,23 +1,31 @@
-import * as cf from 'firebase-functions';
-
-interface ICloudFunctions {
-  withRuntime: (options?: cf.RuntimeOptions) => ICloudFunctions;
-  handlerV1: (func: cf.HttpsFunction, region?: string) => cf.HttpsFunction;
-}
+import { initializeApp } from "firebase-admin/app";
+import * as cf from "firebase-functions/v2/https";
+import { setGlobalOptions } from "firebase-functions/v2";
+import { IHttpOptions } from "../..";
 
 export type THttpsFunction = cf.HttpsFunction;
 
-class CloudFunctions implements ICloudFunctions {
-  private _defaultRegion = 'asia-east1';
-  private _cf = cf;
+initializeApp();
 
-  public withRuntime(options?: cf.RuntimeOptions): ICloudFunctions {
-    this._cf.runWith(options || {});
+setGlobalOptions({ maxInstances: 10 });
+
+class CloudFunctions {
+  private _cf = cf;
+  private _options = { region: process.env.REGION } as IHttpOptions;
+  private static _instance: CloudFunctions;
+
+  public static get instance() {
+    this._instance = this._instance || new CloudFunctions();
+    return this._instance;
+  }
+
+  public withRuntime(options?: IHttpOptions): this {
+    this._options ??= options as IHttpOptions;
     return this;
   }
 
-  public handlerV1(func: cf.HttpsFunction, region?: string) {
-    return this._cf.region(region || this._defaultRegion).https.onRequest(func);
+  public handlerV2(func: cf.HttpsFunction) {
+    return this._cf.onRequest(this._options, func);
   }
 }
 

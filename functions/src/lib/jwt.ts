@@ -1,4 +1,5 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { auth } from "firebase-admin";
 
 type TVerifiedToken = {
   id: string;
@@ -10,15 +11,20 @@ class TokenService {
     this._tokenSecret = String(process.env.TOKEN_SECRET);
   }
 
+  public async verifyGoogleToken(token: string) {
+    const authenticated = await auth().verifyIdToken(token);
+    return authenticated;
+  }
+
   public sign(payload: Record<string, any>) {
     return new Promise((resolve, reject) => {
       return jwt.sign(
         {
-          id: payload.id,
+          ...payload,
         },
         this._tokenSecret,
         {
-          expiresIn: '1d',
+          expiresIn: "1d",
         },
         function (err, token) {
           return err ? reject(err) : resolve(token as string);
