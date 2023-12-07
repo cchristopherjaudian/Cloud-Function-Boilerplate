@@ -1,24 +1,17 @@
-import { NextFunction, Response, Request } from 'express';
-import httpStatus from 'http-status';
-import { NotFoundError } from '../lib/custom-errors/class-errors';
-import ResponseCodes from '../../commons/response-codes';
+import { NextFunction, Response, Request } from "express";
+import httpStatus from "http-status";
+import { NotFoundError } from "../lib/custom-errors/class-errors";
+import ResponseCodes from "../../commons/response-codes";
+import { TNormalizedError } from "../..";
 
-type TResponseError = {
-  statusCode?: string;
-  status?: number;
-  message?: string;
-  stack?: string;
-};
-
-export type TNormalizedError = Error & TResponseError;
-
-class RouteMiddleware {
+class ErrorMiddleware {
   public notFound(req: Request, res: Response, next: NextFunction): void {
     const error = new NotFoundError(`cannot find -> ${req.originalUrl}`);
     res.status(httpStatus.NOT_FOUND);
     next(error);
   }
 
+  /*  eslint-disable @typescript-eslint/no-unused-vars */
   public errorResponse(
     error: TNormalizedError,
     req: Request,
@@ -32,10 +25,10 @@ class RouteMiddleware {
       code: statusCode,
       data: {
         message: error.message,
-        stack: process.env.NODE_ENV === 'production' ? '' : error.stack,
+        stack: process.env.NODE_ENV === "production" ? "" : error.stack,
       },
     });
   }
 }
 
-export default RouteMiddleware;
+export default ErrorMiddleware;

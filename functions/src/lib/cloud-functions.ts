@@ -14,17 +14,17 @@ class CloudFunctions {
   private _options = { region: process.env.REGION } as IHttpOptions;
   private static _instance: CloudFunctions;
 
-  public static get instance() {
+  public static get instance(): CloudFunctions {
     this._instance = this._instance || new CloudFunctions();
     return this._instance;
   }
 
-  public withRuntime(options?: IHttpOptions): this {
+  public withRuntime(options?: IHttpOptions): CloudFunctions {
     this._options ??= options as IHttpOptions;
     return this;
   }
 
-  public handlerV2(func: cf.HttpsFunction) {
+  public handlerV2(func: cf.HttpsFunction): cf.HttpsFunction {
     return this._cf.onRequest(this._options, func);
   }
 }

@@ -1,27 +1,19 @@
 import jwt from "jsonwebtoken";
-import { auth } from "firebase-admin";
+import { TVerifiedToken } from "../types/jwt";
 
-type TVerifiedToken = {
-  id: string;
-};
+class JwtToken {
+  private static _instance: JwtToken;
+  private _tokenSecret = String(process.env.TOKEN_SECRET);
 
-class TokenService {
-  private _tokenSecret;
-  constructor() {
-    this._tokenSecret = String(process.env.TOKEN_SECRET);
+  public static get instance(): JwtToken {
+    this._instance = this._instance || new JwtToken();
+    return this._instance;
   }
 
-  public async verifyGoogleToken(token: string) {
-    const authenticated = await auth().verifyIdToken(token);
-    return authenticated;
-  }
-
-  public sign(payload: Record<string, any>) {
+  public sign(payload: Record<string, any>): Promise<string | unknown> {
     return new Promise((resolve, reject) => {
       return jwt.sign(
-        {
-          ...payload,
-        },
+        payload,
         this._tokenSecret,
         {
           expiresIn: "1d",
@@ -42,4 +34,4 @@ class TokenService {
   }
 }
 
-export default TokenService;
+export default JwtToken;

@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatuses {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum AccountTypes {
+  BASIC_USER
+  ADMIN
+}
+
+model Account {
+  id          String          @id @default(uuid())
+  username    String          @db.VarChar(100)
+  password    String          @db.VarChar(100)
+  status      AccountStatuses @default(INACTIVE)
+  accountType AccountTypes?   @map("account_type")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  profile     Profile?
+
+  @@map("account")
+}
+
+model Profile {
+  id         String  @id @default(uuid())
+  firstname  String  @db.VarChar(100)
+  lastname   String  @db.VarChar(100)
+  middlename String? @db.VarChar(100)
+  address    String  @db.VarChar(100)
+  photoUrl   String? @map("photo_url")
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String  @unique @map("account_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profile")
+}

@@ -1,16 +1,7 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 import express from "express";
 import * as logger from "firebase-functions/logger";
-import CloudFunctions, { THttpsFunction } from "./lib/cloud-functions";
-import RouteMiddleware from "./middleware/response-handlers";
+import CloudFunctions from "./lib/cloud-functions";
+import ErrorMiddleware from "./middleware/error-middleware";
 import { HttpsFunction } from "firebase-functions/v2/https";
 
 const app = express();
@@ -21,8 +12,8 @@ app.get("/", (request, response) => {
 });
 
 // route middlewares e.g(not found, error handlers)
-app.use(new RouteMiddleware().errorResponse);
-app.use(new RouteMiddleware().notFound);
+app.use(new ErrorMiddleware().errorResponse);
+app.use(new ErrorMiddleware().notFound);
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
