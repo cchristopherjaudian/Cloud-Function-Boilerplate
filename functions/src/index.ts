@@ -1,15 +1,12 @@
 import express from "express";
-import * as logger from "firebase-functions/logger";
+import cors from "cors";
 import CloudFunctions from "./lib/cloud-functions";
 import ErrorMiddleware from "./middleware/error-middleware";
 import { HttpsFunction } from "firebase-functions/v2/https";
 
 const app = express();
 
-app.get("/", (request, response) => {
-  logger.info("Hello logs!", { structuredData: true });
-  response.json("Hello from Firebase!");
-});
+app.use(cors());
 
 // route middlewares e.g(not found, error handlers)
 app.use(new ErrorMiddleware().errorResponse);
