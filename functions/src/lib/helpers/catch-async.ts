@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TCatchAsync } from "../../types/response-middleware";
 
 const catchAsync =

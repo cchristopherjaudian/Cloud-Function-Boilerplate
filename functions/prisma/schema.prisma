@@ -10,26 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AccountStatuses {
-  ACTIVE
-  INACTIVE
-  DELETED
-}
-
-enum AccountTypes {
-  BASIC_USER
-  ADMIN
-}
-
 model Account {
-  id          String          @id @default(uuid())
-  username    String          @db.VarChar(100)
-  password    String          @db.VarChar(100)
-  status      AccountStatuses @default(INACTIVE)
-  accountType AccountTypes?   @map("account_type")
-  createdAt   DateTime        @default(now()) @map("created_at")
-  updatedAt   DateTime        @updatedAt @map("updated_at")
-  profile     Profile?
+  id        String   @id @default(uuid())
+  username  String   @db.VarChar(100)
+  password  String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  profile   Profile?
 
   @@map("account")
 }

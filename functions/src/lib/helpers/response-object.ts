@@ -4,7 +4,7 @@ const ResponseObject = (
   res: Response,
   status: number,
   code: string,
-  respObject: Record<string, any>
+  respObject: Record<string, any> | null
 ) => {
   return res.status(status).json({
     status,
