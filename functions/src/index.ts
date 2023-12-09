@@ -18,6 +18,6 @@ app.use(new ErrorMiddleware().notFound);
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
-export const cf_boilerplate = CloudFunctions.instance
+export const api = CloudFunctions.instance
   .withRuntime()
   .handlerV2(<HttpsFunction>(<unknown>app));

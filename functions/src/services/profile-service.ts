@@ -33,4 +33,23 @@ class AccountProfileService {
   }
 }
 
-export { AccountProfileService };
+class ProfileService {
+  private _db: TPrismaClient;
+
+  constructor(db: TPrismaClient) {
+    this._db = db;
+  }
+
+  public async getProfile(id: string) {
+    const profile = await this._db.profile.findUnique({
+      where: { id },
+      include: {
+        account: true,
+      },
+    });
+    if (!profile) throw new BadRequestError("Profile does not exists.");
+    return profile;
+  }
+}
+
+export { AccountProfileService, ProfileService };
